@@ -20,7 +20,7 @@ class CVS {
     this.input = new Input(document.body);
     this.jetman = new JetMan(this.stageProps);
     this.level = new Level(this.stageProps);
-
+    this.hud = new Hud(this.stageProps);
 
     this.started = false;
     let x = this.input.addListener(this.input.SPACE, (e) => {
@@ -40,16 +40,18 @@ class CVS {
     this.jetman.move(this.input.check(this.input.SPACE));
     this.jetman.draw(this.ctx);
     this.level.draw(this.ctx, 0);
-    // TODO Check Collisions
 
+    this.hud.incrementScore();
+    this.hud.draw(this.ctx);
 
-    // TODO Create hud (score etc.)
-    // this.hud.draw(this.ctx);
+    if (! this.jetman.isCollided(this.level.walls[0])) {
+      requestAnimationFrame(() => {
+        this.update()
+      });
+    } else {
+        // TODO Prompt end game and feedback / reset game
+    }
 
-
-    requestAnimationFrame(() => {
-      this.update()
-    });
   }
 }
 

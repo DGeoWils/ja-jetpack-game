@@ -1,7 +1,7 @@
 import {normalize} from "../helpers";
 
 // TODO Decrease space between as game goes on?
-const spaceBetween = 20;
+const spaceBetween = 30;
 const wallWidth = 50;
 const wallColor = 'green';
 
@@ -24,6 +24,9 @@ export default class Walls {
   draw(context) {
     const normalizedX = normalize(this.x, this.stageProps.width);
 
+    this.left = normalizedX;
+    this.right = normalizedX + wallWidth;
+
     context.beginPath();
 
     context.rect(normalizedX, 0, wallWidth, this.normalizedRectangle1Height);
@@ -32,6 +35,7 @@ export default class Walls {
     context.fillStyle = wallColor;
     context.fill();
   }
+
 
   move() {
     this.x -= this.speed;
@@ -43,8 +47,6 @@ export default class Walls {
 
     const rectangle1Height = Math.floor(Math.random() * (max - min));
     const rectangle2Height = 100 - rectangle1Height - this.spaceBetween;
-
-    console.log(rectangle1Height);
 
     return [rectangle1Height, rectangle2Height];
   }
