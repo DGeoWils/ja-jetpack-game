@@ -1,73 +1,66 @@
-import utils from './utils'
+import '../scss/app.scss';
+import JetMan from "./classes/JetMan";
+import Level from "./classes/Level";
+import Input from "./classes/Input";
+import Hud from "./classes/Hud";
 
-const canvas = document.querySelector('canvas')
-const c = canvas.getContext('2d')
+class CVS {
+  constructor() {
+    this.canvas = document.querySelector("canvas");
+    this.ctx = this.canvas.getContext('2d');
 
-canvas.width = innerWidth
-canvas.height = innerHeight
+    this.stageProps = {
+      width: 860,
+      height: 640
+    };
 
-const mouse = {
-  x: innerWidth / 2,
-  y: innerHeight / 2
-}
+    this.canvas.width = this.stageProps.width;
+    this.canvas.height = this.stageProps.height;
 
-const colors = ['#2185C5', '#7ECEFD', '#FFF6E5', '#FF7F66']
+    this.input = new Input(document.body);
+    this.jetman = new JetMan(this.stageProps);
+    this.level = new Level(this.stageProps);
 
-// Event Listeners
-addEventListener('mousemove', (event) => {
-  mouse.x = event.clientX
-  mouse.y = event.clientY
-})
 
-addEventListener('resize', () => {
-  canvas.width = innerWidth
-  canvas.height = innerHeight
-
-  init()
-})
-
-// Objects
-class Object {
-  constructor(x, y, radius, color) {
-    this.x = x
-    this.y = y
-    this.radius = radius
-    this.color = color
-  }
-
-  draw() {
-    c.beginPath()
-    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-    c.fillStyle = this.color
-    c.fill()
-    c.closePath()
+    this.started = false;
+    let x = this.input.addListener(this.input.SPACE, (e) => {
+      if(!this.started) {
+        this.update();
+      }
+      this.started = true;
+    });
   }
 
   update() {
-    this.draw()
+
+
+    this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
+
+    //player
+    this.jetman.move(this.input.check(this.input.SPACE));
+    this.jetman.draw(this.ctx);
+    this.level.draw(this.ctx, 0);
+    // TODO Check Collisions
+
+
+    // TODO Create hud (score etc.)
+    // this.hud.draw(this.ctx);
+
+
+    requestAnimationFrame(() => {
+      this.update()
+    });
   }
 }
 
-// Implementation
-let objects
-function init() {
-  objects = []
+(function () {
+  let requestAnimationFrame = window.requestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.msRequestAnimationFrame;
 
-  for (let i = 0; i < 400; i++) {
-    // objects.push()
-  }
-}
+  window.requestAnimationFrame = requestAnimationFrame;
 
-// Animation Loop
-function animate() {
-  requestAnimationFrame(animate)
-  c.clearRect(0, 0, canvas.width, canvas.height)
+  let cvs = new CVS();
+})();
 
-  c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y)
-  // objects.forEach(object => {
-  //  object.update()
-  // })
-}
-
-init()
-animate()
