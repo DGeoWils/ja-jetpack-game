@@ -18,21 +18,45 @@ class CVS {
     this.canvas.height = this.stageProps.height;
 
     this.input = new Input(document.body);
-    this.jetman = new JetMan(this.stageProps);
-    this.level = new Level(this.stageProps);
-    this.hud = new Hud(this.stageProps);
-
     this.started = false;
+    this.ended = false;
+
+    this.buildWorld();
+
     let x = this.input.addListener(this.input.SPACE, (e) => {
-      if(!this.started) {
+      if(!this.started && !this.ended ) {
         this.update();
       }
       this.started = true;
     });
+
+    this.input.addListener(this.input.ENTER, (e) => {
+      if (this.ended) {
+        this.buildWorld();
+        this.ended = false;
+        this.started = false;
+      }
+    });
+  }
+
+  buildWorld() {
+    this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
+
+    this.jetman = new JetMan(this.stageProps);
+    this.level = new Level(this.stageProps);
+    this.hud = new Hud(this.stageProps);
+  }
+
+  stop(requestId) {
+    cancelAnimationFrame(requestId);
+
+    this.hud.endGame(this.ctx);
+
+    this.started = false;
+    this.ended = true;
   }
 
   update() {
-
 
     this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
 
@@ -44,14 +68,13 @@ class CVS {
     this.hud.incrementScore();
     this.hud.draw(this.ctx);
 
-    if (! this.jetman.isCollided(this.level.walls[0])) {
-      requestAnimationFrame(() => {
-        this.update()
-      });
-    } else {
-        // TODO Prompt end game and feedback / reset game
-    }
+    let requestId = requestAnimationFrame(() => {
+      this.update()
+    });
 
+    if (this.jetman.isCollided(this.level.walls[0])) {
+      this.stop(requestId);
+    }
   }
 }
 
