@@ -60,8 +60,10 @@ export default class JetMan {
     // Prevent the player from leaving the screen
     if (this.y > 100) {
       this.y = 100;
+      this.velocityY = 0;
     } else if (this.y < 0) {
       this.y = 0;
+      this.velocityY = 0;
     }
   }
 
