@@ -52,6 +52,7 @@ class CVS {
     this.hud = new Hud(this.stageProps, this.ctx);
 
     this.level.drawBackground();
+    this.level.showTitleScreen();
   }
 
   stop(requestId) {
