@@ -32,21 +32,21 @@ export default class JetMan {
     context.closePath();
   }
 
-  move(delta) {
+  move(deltaTime) {
     // Move the player according to velocity
-    this.y -= this.velocityY * delta;
-    this.x -= this.velocityX * delta;
+    this.y -= this.velocityY * deltaTime;
+    this.x -= this.velocityX * deltaTime;
     
-    // Prevent the player from falling off the top and bottom of the screen
+    // Apply gravity if max velocity hasn't been reached
+    if (this.velocityY > -maxVelocity) {
+      this.velocityY -= gravity * deltaTime;
+    }
+
+    // Prevent the player from leaving the screen
     if (this.y > 100) {
       this.y = 100;
     } else if (this.y < 0) {
       this.y = 0;
-    }
-
-    // Apply gravity if max velocity hasn't been reached
-    if (this.velocityY > -maxVelocity) {
-      this.velocityY -= gravity * delta;
     }
   }
 
