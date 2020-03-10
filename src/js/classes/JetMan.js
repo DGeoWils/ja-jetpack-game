@@ -10,7 +10,7 @@ const radius = 25;
 const pixelDimension = 10;
 
 const pixelsWide = 7;
-const pixelsHigh = 12;
+const pixelsHigh = 13;
 
 const boundingBoxColor = 'orange';
 
