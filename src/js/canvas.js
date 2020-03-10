@@ -69,6 +69,10 @@ class CVS {
     this.hud.draw(this.ctx);
 
     let requestId = requestAnimationFrame(() => {
+      if (this.hud.score % 500 === 0) {
+        this.level.increaseSpeed();
+      }
+
       this.update()
     });
 

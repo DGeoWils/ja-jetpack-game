@@ -7,7 +7,7 @@ export default class Hud {
     context.fillStyle = 'black';
     context.font = '20px Courier';
     context.textAlign = 'center';
-    context.fillText('Score: ' + this.score, 60, 50);
+    context.fillText('Score: ' + this.score, 80, 50);
   }
 
   incrementScore() {

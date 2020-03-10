@@ -1,7 +1,7 @@
 import {normalize} from "../helpers";
 
 // TODO Decrease space between as game goes on?
-const spaceBetween = 30;
+const spaceBetween = 40;
 const wallWidth = 50;
 const wallColor = 'green';
 
