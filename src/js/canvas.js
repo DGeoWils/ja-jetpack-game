@@ -21,13 +21,17 @@ class CVS {
     this.started = false;
     this.ended = false;
 
+    this.lastUpdate = null;
+    
     this.buildWorld();
 
     let x = this.input.addListener(this.input.SPACE, (e) => {
-      if(!this.started && !this.ended ) {
+      // Start the game if it hasn't been started yet
+      if (!this.started && !this.ended) {
+        this.started = true;
+        this.lastUpdate = performance.now();
         this.update();
       }
-      this.started = true;
     });
 
     this.input.addListener(this.input.ENTER, (e) => {
@@ -57,11 +61,17 @@ class CVS {
   }
 
   update() {
+    // Calculate the delta time (time passed)
+    const currentTime = performance.now();
+    const deltaTime = (currentTime - this.lastUpdate) / 100;
+    this.lastUpdate = currentTime;
 
+    // Calculate movement / collisions
+    this.jetman.move(deltaTime, this.input.check(this.input.SPACE));
+    this.level.update(deltaTime);
+
+    // Render everything
     this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
-
-    //player
-    this.jetman.move(this.input.check(this.input.SPACE));
     this.jetman.draw(this.ctx);
     this.level.draw(this.ctx, 0);
 
@@ -92,4 +102,3 @@ class CVS {
 
   let cvs = new CVS();
 })();
-

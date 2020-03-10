@@ -2,8 +2,9 @@ import {normalize} from "../helpers";
 
 const startVertical = 90;
 const startHorizontal = 10;
-const acceleration = 3;
-const gravity = 2;
+const acceleration = 5.2;
+const gravity = 3;
+const maxVelocity = 8;
 const radius = 25;
 
 
@@ -11,6 +12,8 @@ export default class JetMan {
   constructor(stageProps) {
     this.x = startHorizontal;
     this.y = startVertical;
+    this.velocityX = 0;
+    this.velocityY = 0;
     this.color = 'blue';
     this.boundingBox = {
       top: normalize(startVertical, stageProps.height) - radius,
@@ -44,24 +47,33 @@ export default class JetMan {
     this.boundingBox.right = normalizedX + radius;
   }
 
-  move(spaceDown) {
-    spaceDown ? this.accelerate() : this.drop();
-  }
+  move(deltaTime, spaceDown) {
+    // Move the player according to velocity
+    this.y -= this.velocityY * deltaTime;
+    this.x -= this.velocityX * deltaTime;
+    
+    // If player is holding space, accelerate upwards
+    if (spaceDown) {
+      this.velocityY += acceleration * deltaTime;
+    }
+  
+    // Apply gravity if max velocity hasn't been reached
+    if (this.velocityY > -maxVelocity) {
+      this.velocityY -= gravity * deltaTime;
+    }
 
-  accelerate() {
-    // TODO Add Acceleration Physics
-
-    if(this.y > 0) {
-      this.y -= 1;
+    // Prevent the player from leaving the screen
+    if (this.y > 100) {
+      this.y = 100;
+      this.velocityY = 0;
+    } else if (this.y < 0) {
+      this.y = 0;
+      this.velocityY = 0;
     }
   }
 
-  drop() {
-    //TODO Add Gravity Physics
-
-    if(this.y < 100) {
-      this.y += 1;
-    }
+  jump() {
+    this.velocityY = acceleration;
   }
 
   isCollided(wall) {
