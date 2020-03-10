@@ -2,8 +2,8 @@ import {normalize} from "../helpers";
 
 const startVertical = 90;
 const startHorizontal = 10;
-const acceleration = 6;
-const gravity = 2;
+const acceleration = 5.2;
+const gravity = 3;
 const maxVelocity = 8;
 const radius = 25;
 
@@ -47,11 +47,16 @@ export default class JetMan {
     this.boundingBox.right = normalizedX + radius;
   }
 
-  move(deltaTime) {
+  move(deltaTime, spaceDown) {
     // Move the player according to velocity
     this.y -= this.velocityY * deltaTime;
     this.x -= this.velocityX * deltaTime;
     
+    // If player is holding space, accelerate upwards
+    if (spaceDown) {
+      this.velocityY += acceleration * deltaTime;
+    }
+  
     // Apply gravity if max velocity hasn't been reached
     if (this.velocityY > -maxVelocity) {
       this.velocityY -= gravity * deltaTime;

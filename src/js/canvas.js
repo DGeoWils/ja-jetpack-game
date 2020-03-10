@@ -29,13 +29,9 @@ class CVS {
       // Start the game if it hasn't been started yet
       if (!this.started && !this.ended) {
         this.started = true;
-        this.lastUpdate = new Date().getTime();
+        this.lastUpdate = performance.now();
         this.update();
-        return;
       }
-
-      // Trigger player jump
-      this.jetman.jump();
     });
 
     this.input.addListener(this.input.ENTER, (e) => {
@@ -66,12 +62,13 @@ class CVS {
 
   update() {
     // Calculate the delta time (time passed)
-    const currentTime = new Date().getTime();
+    const currentTime = performance.now();
     const deltaTime = (currentTime - this.lastUpdate) / 100;
     this.lastUpdate = currentTime;
 
     // Calculate movement / collisions
-    this.jetman.move(deltaTime);
+    this.jetman.move(deltaTime, this.input.check(this.input.SPACE));
+    this.level.update(deltaTime);
 
     // Render everything
     this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);

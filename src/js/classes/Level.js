@@ -1,7 +1,7 @@
 import Walls from "./Walls";
 
 const newWallAt = 15;
-const startingSpeed = 1;
+const startingSpeed = 30;
 
 export default class Level {
   constructor(stageProps) {
@@ -12,25 +12,29 @@ export default class Level {
     this.walls.push(new Walls(this.speed, this.stageProps));
   }
 
-  draw(context, score) {
+  update(deltaTime) {
+    for (let i = 0; i < this.walls.length; i++) {
+      this.walls[i].move(deltaTime, this.speed);
+    }
 
-    this.walls.forEach(wall => {
-      wall.move();
-      wall.draw(context);
-    });
-
-    if(
+    if (
       this.walls.length < 2 &&
       this.walls[0].x < newWallAt) {
       this.walls.push(new Walls(this.speed, this.stageProps));
     }
 
-    if(this.walls[0].x <= -this.walls[0].wallWidth) {
+    if (this.walls[0].x <= -this.walls[0].wallWidth) {
       this.walls.shift();
     }
   }
 
+  draw(context, score) {
+    for (let i = 0; i < this.walls.length; i++) {
+      this.walls[i].draw(context)
+    }
+  }
+
   increaseSpeed() {
-    this.speed += 0.25
+    this.speed += 1
   }
 }

@@ -7,7 +7,7 @@ const wallColor = 'green';
 
 export default class Walls {
   constructor(speed, stageProps) {
-    this.x = 100;
+    this.x = stageProps.width;
     this.wallWidth = wallWidth;
     this.stageProps = stageProps;
 
@@ -22,23 +22,23 @@ export default class Walls {
   }
 
   draw(context) {
-    const normalizedX = normalize(this.x, this.stageProps.width);
+    // const normalizedX = normalize(this.x, this.stageProps.width);
 
-    this.left = normalizedX;
-    this.right = normalizedX + wallWidth;
+    this.left = this.x;
+    this.right = this.x + wallWidth;
 
     context.beginPath();
 
-    context.rect(normalizedX, 0, wallWidth, this.normalizedRectangle1Height);
-    context.rect(normalizedX, this.normalizedRectangle2StartY, wallWidth, this.normalizedRectangle2Height);
+    context.rect(this.x, 0, wallWidth, this.normalizedRectangle1Height);
+    context.rect(this.x, this.normalizedRectangle2StartY, wallWidth, this.normalizedRectangle2Height);
 
     context.fillStyle = wallColor;
     context.fill();
   }
 
 
-  move() {
-    this.x -= this.speed;
+  move(deltaTime, speed) {
+    this.x -= speed * deltaTime;
   }
 
   calculateRectangleHeights() {
