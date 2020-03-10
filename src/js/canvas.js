@@ -22,7 +22,7 @@ class CVS {
     this.ended = false;
 
     this.lastUpdate = null;
-    
+
     this.buildWorld();
 
     let x = this.input.addListener(this.input.SPACE, (e) => {
@@ -46,25 +46,29 @@ class CVS {
   buildWorld() {
     this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
 
-    this.jetman = new JetMan(this.stageProps);
-    this.level = new Level(this.stageProps);
-    this.hud = new Hud(this.stageProps);
+
+    this.jetman = new JetMan(this.stageProps, this.ctx);
+    this.level = new Level(this.stageProps, this.ctx);
+    this.hud = new Hud(this.stageProps, this.ctx);
+
+    this.level.drawBackground();
   }
 
   stop(requestId) {
     cancelAnimationFrame(requestId);
-
-    this.hud.endGame(this.ctx);
+    this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
+    this.level.endGame(this.hud.score);
 
     this.started = false;
     this.ended = true;
   }
 
-  update() {
+  update(timestamp) {
     // Calculate the delta time (time passed)
-    const currentTime = performance.now();
+
+    const currentTime = timestamp || performance.now();
     const deltaTime = (currentTime - this.lastUpdate) / 100;
-    this.lastUpdate = currentTime;
+    this.lastUpdate = timestamp || currentTime;
 
     // Calculate movement / collisions
     this.jetman.move(deltaTime, this.input.check(this.input.SPACE));
@@ -72,21 +76,17 @@ class CVS {
 
     // Render everything
     this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
-    this.jetman.draw(this.ctx);
-    this.level.draw(this.ctx, 0);
+
+    this.level.drawBackground();
+    this.jetman.draw();
+    this.level.draw();
 
     this.hud.incrementScore();
-    this.hud.draw(this.ctx);
+    this.hud.draw();
 
-    let requestId = requestAnimationFrame(() => {
-      if (this.hud.score % 500 === 0) {
-        this.level.increaseSpeed();
-      }
+    let requestId = requestAnimationFrame((frameTime) => this.update(frameTime));
 
-      this.update()
-    });
-
-    if (this.jetman.isCollided(this.level.walls[0])) {
+    if (this.jetman.isCollided(this.level.walls[this.level.closerWall])) {
       this.stop(requestId);
     }
   }

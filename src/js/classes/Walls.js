@@ -1,53 +1,55 @@
 import {normalize} from "../helpers";
+import {colorDarkRed}  from "../graphics/Flame";
 
-// TODO Decrease space between as game goes on?
-const spaceBetween = 40;
-const wallWidth = 50;
-const wallColor = 'green';
+// const wallColor = 'green';
+
+
 
 export default class Walls {
-  constructor(speed, stageProps) {
-    this.x = stageProps.width;
-    this.wallWidth = wallWidth;
+  constructor(stageProps, context) {
+    this.context = context;
+    this.wallWidth = 50;
     this.stageProps = stageProps;
-
-    this.speed = speed;
-    this.spaceBetween = spaceBetween;
-
-    let rectangleHeights = this.calculateRectangleHeights();
-
-    this.normalizedRectangle1Height = normalize(rectangleHeights[0], stageProps.height);
-    this.normalizedRectangle2Height = normalize(rectangleHeights[1], stageProps.height);
-    this.normalizedRectangle2StartY = stageProps.height - this.normalizedRectangle2Height;
+    this.spaceBetween = 200;
   }
 
-  draw(context) {
-    // const normalizedX = normalize(this.x, this.stageProps.width);
+  init() {
+    this.moving = false;
+    this.x = this.stageProps.width;
 
+    this.calculateRectangleHeights();
+  }
+
+  draw() {
     this.left = this.x;
-    this.right = this.x + wallWidth;
+    this.right = this.x + this.wallWidth;
 
-    context.beginPath();
+    this.context.beginPath();
 
-    context.rect(this.x, 0, wallWidth, this.normalizedRectangle1Height);
-    context.rect(this.x, this.normalizedRectangle2StartY, wallWidth, this.normalizedRectangle2Height);
+    this.context.rect(this.x, 0, this.wallWidth, this.normalizedRectangle1Height);
+    this.context.rect(this.x, this.normalizedRectangle2StartY, this.wallWidth, this.normalizedRectangle2Height);
 
-    context.fillStyle = wallColor;
-    context.fill();
+    this.context.fillStyle = colorDarkRed;
+    this.context.fill();
   }
 
 
   move(deltaTime, speed) {
-    this.x -= speed * deltaTime;
+    if (this.moving) {
+      this.x -= speed * deltaTime;
+
+      if (this.x < (0 - this.wallWidth)) {
+        this.init();
+      }
+    }
   }
 
   calculateRectangleHeights() {
-    const max = Math.ceil(100 - this.spaceBetween);
+    const max = Math.ceil(this.stageProps.height - this.spaceBetween);
     const min = Math.floor(0);
 
-    const rectangle1Height = Math.floor(Math.random() * (max - min));
-    const rectangle2Height = 100 - rectangle1Height - this.spaceBetween;
-
-    return [rectangle1Height, rectangle2Height];
+    this.normalizedRectangle1Height = Math.floor(Math.random() * (max - min));
+    this.normalizedRectangle2Height = this.stageProps.height - this.normalizedRectangle1Height - this.spaceBetween;
+    this.normalizedRectangle2StartY = this.stageProps.height - this.normalizedRectangle2Height;
   }
 }
