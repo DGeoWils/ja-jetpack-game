@@ -5,22 +5,30 @@ const startHorizontal = 10;
 const acceleration = 6;
 const gravity = 2;
 const maxVelocity = 8;
+const radius = 25;
+
 
 export default class JetMan {
-  constructor() {
+  constructor(stageProps) {
     this.x = startHorizontal;
     this.y = startVertical;
     this.velocityX = 0;
     this.velocityY = 0;
     this.color = 'blue';
+    this.boundingBox = {
+      top: normalize(startVertical, stageProps.height) - radius,
+      bottom: normalize(startVertical, stageProps.height) + radius,
+      left: normalize(startHorizontal, stageProps.width) - radius,
+      right: normalize(startHorizontal, stageProps.width) - radius,
+    };
     this.moving = true;
   }
 
   draw(context) {
-    const radius = 25;
-
     const normalizedX = normalize(this.x, context.canvas.width);
     const normalizedY = normalize(this.y, context.canvas.height);
+
+    this.updateBoundingBox(normalizedX, normalizedY, radius);
 
     context.beginPath();
 
@@ -30,6 +38,13 @@ export default class JetMan {
     context.fillStyle = this.color;
     context.fill();
     context.closePath();
+  }
+
+  updateBoundingBox(normalizedX, normalizedY, radius) {
+    this.boundingBox.top = normalizedY - radius;
+    this.boundingBox.bottom = normalizedY + radius;
+    this.boundingBox.left = normalizedX - radius;
+    this.boundingBox.right = normalizedX + radius;
   }
 
   move(deltaTime) {
@@ -52,5 +67,11 @@ export default class JetMan {
 
   jump() {
     this.velocityY = acceleration;
+  }
+
+  isCollided(wall) {
+    return this.boundingBox.right > wall.left
+        && this.boundingBox.left < wall.right
+        && (this.boundingBox.top < wall.normalizedRectangle1Height || this.boundingBox.bottom > wall.normalizedRectangle2StartY)
   }
 }

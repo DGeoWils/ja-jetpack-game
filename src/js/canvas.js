@@ -18,15 +18,16 @@ class CVS {
     this.canvas.height = this.stageProps.height;
 
     this.input = new Input(document.body);
-    this.jetman = new JetMan(this.stageProps);
-    this.level = new Level(this.stageProps);
+    this.started = false;
+    this.ended = false;
 
     this.lastUpdate = null;
+    
+    this.buildWorld();
 
-    this.started = false;
     let x = this.input.addListener(this.input.SPACE, (e) => {
       // Start the game if it hasn't been started yet
-      if (!this.started) {
+      if (!this.started && !this.ended) {
         this.started = true;
         this.lastUpdate = new Date().getTime();
         this.update();
@@ -36,6 +37,31 @@ class CVS {
       // Trigger player jump
       this.jetman.jump();
     });
+
+    this.input.addListener(this.input.ENTER, (e) => {
+      if (this.ended) {
+        this.buildWorld();
+        this.ended = false;
+        this.started = false;
+      }
+    });
+  }
+
+  buildWorld() {
+    this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
+
+    this.jetman = new JetMan(this.stageProps);
+    this.level = new Level(this.stageProps);
+    this.hud = new Hud(this.stageProps);
+  }
+
+  stop(requestId) {
+    cancelAnimationFrame(requestId);
+
+    this.hud.endGame(this.ctx);
+
+    this.started = false;
+    this.ended = true;
   }
 
   update() {
@@ -52,16 +78,20 @@ class CVS {
     this.jetman.draw(this.ctx);
     this.level.draw(this.ctx, 0);
 
-    // TODO Check Collisions
+    this.hud.incrementScore();
+    this.hud.draw(this.ctx);
 
+    let requestId = requestAnimationFrame(() => {
+      if (this.hud.score % 500 === 0) {
+        this.level.increaseSpeed();
+      }
 
-    // TODO Create hud (score etc.)
-    // this.hud.draw(this.ctx);
-
-
-    requestAnimationFrame(() => {
       this.update()
     });
+
+    if (this.jetman.isCollided(this.level.walls[0])) {
+      this.stop(requestId);
+    }
   }
 }
 
