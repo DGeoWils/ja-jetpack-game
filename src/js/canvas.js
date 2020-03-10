@@ -21,25 +21,37 @@ class CVS {
     this.jetman = new JetMan(this.stageProps);
     this.level = new Level(this.stageProps);
 
+    this.lastUpdate = null;
 
     this.started = false;
     let x = this.input.addListener(this.input.SPACE, (e) => {
-      if(!this.started) {
+      // Start the game if it hasn't been started yet
+      if (!this.started) {
+        this.started = true;
+        this.lastUpdate = new Date().getTime();
         this.update();
+        return;
       }
-      this.started = true;
+
+      // Trigger player jump
+      this.jetman.jump();
     });
   }
 
   update() {
+    // Calculate the delta time (time passed)
+    const currentTime = new Date().getTime();
+    const deltaTime = (currentTime - this.lastUpdate) / 100;
+    this.lastUpdate = currentTime;
 
+    // Calculate movement / collisions
+    this.jetman.move(deltaTime);
 
+    // Render everything
     this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
-
-    //player
-    this.jetman.move(this.input.check(this.input.SPACE));
     this.jetman.draw(this.ctx);
     this.level.draw(this.ctx, 0);
+
     // TODO Check Collisions
 
 
@@ -63,4 +75,3 @@ class CVS {
 
   let cvs = new CVS();
 })();
-

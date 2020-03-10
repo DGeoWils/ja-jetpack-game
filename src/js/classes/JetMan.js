@@ -2,13 +2,16 @@ import {normalize} from "../helpers";
 
 const startVertical = 90;
 const startHorizontal = 10;
-const acceleration = 3;
+const acceleration = 6;
 const gravity = 2;
+const maxVelocity = 8;
 
 export default class JetMan {
   constructor() {
     this.x = startHorizontal;
     this.y = startVertical;
+    this.velocityX = 0;
+    this.velocityY = 0;
     this.color = 'blue';
     this.moving = true;
   }
@@ -29,23 +32,25 @@ export default class JetMan {
     context.closePath();
   }
 
-  move(spaceDown) {
-    spaceDown ? this.accelerate() : this.drop();
-  }
+  move(delta) {
+    // Move the player according to velocity
+    this.y -= this.velocityY * delta;
+    this.x -= this.velocityX * delta;
+    
+    // Prevent the player from falling off the top and bottom of the screen
+    if (this.y > 100) {
+      this.y = 100;
+    } else if (this.y < 0) {
+      this.y = 0;
+    }
 
-  accelerate() {
-    // TODO Add Acceleration Physics
-
-    if(this.y > 0) {
-      this.y -= 1;
+    // Apply gravity if max velocity hasn't been reached
+    if (this.velocityY > -maxVelocity) {
+      this.velocityY -= gravity * delta;
     }
   }
 
-  drop() {
-    //TODO Add Gravity Physics
-
-    if(this.y < 100) {
-      this.y += 1;
-    }
+  jump() {
+    this.velocityY = acceleration;
   }
 }
