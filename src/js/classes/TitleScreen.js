@@ -70,12 +70,15 @@ export default class TitleScreen {
       this.context.strokeStyle = colorBlack;
       this.context.lineWidth = 3;
       this.context.stroke();
+      this.context.closePath();
     } else if (currentCharacter == 2) {
       // select 'dudette'
       this.context.beginPath();
       this.context.rect(this.midX + 40, this.midY + 60, previewWidth * 10, previewHeight * 10);
       this.context.strokeStyle = colorBlack;
+      this.context.lineWidth = 3;
       this.context.stroke();
+      this.context.closePath();
     }
     
   }
