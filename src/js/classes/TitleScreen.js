@@ -44,7 +44,7 @@ export default class TitleScreen {
     for (let x = 0; x < previewWidth; x++) {
       for (let y = 0; y < previewHeight; y++) {
         this.context.beginPath();
-        this.context.rect(this.midX - 130 + (x * 10), this.midY + 70 + (y * 10), 10, 10);
+        this.context.rect(this.midX - 110 + (x * 10), this.midY + 60 + (y * 10), 10, 10);
         this.context.fillStyle = dudeGraphics.fallingPixels[x][y];
         this.context.fill();
         this.context.closePath();
@@ -55,7 +55,7 @@ export default class TitleScreen {
     for (let x = 0; x < previewWidth; x++) {
       for (let y = 0; y < previewHeight; y++) {
         this.context.beginPath();
-        this.context.rect(this.midX + 60 + (x * 10), this.midY + 70 + (y * 10), 10, 10);
+        this.context.rect(this.midX + 40 + (x * 10), this.midY + 60 + (y * 10), 10, 10);
         this.context.fillStyle = dudetteGraphics.fallingPixels[x][y];
         this.context.fill();
         this.context.closePath();
@@ -66,14 +66,14 @@ export default class TitleScreen {
     if (currentCharacter == 1) {
       // select 'dude'
       this.context.beginPath();
-      this.context.rect(this.midX - 130, this.midY + 70, previewWidth * 10, previewHeight * 10);
+      this.context.rect(this.midX - 110, this.midY + 60, previewWidth * 10, previewHeight * 10);
       this.context.strokeStyle = colorBlack;
       this.context.lineWidth = 3;
       this.context.stroke();
     } else if (currentCharacter == 2) {
       // select 'dudette'
       this.context.beginPath();
-      this.context.rect(this.midX + 60, this.midY + 70, previewWidth * 10, previewHeight * 10);
+      this.context.rect(this.midX + 40, this.midY + 60, previewWidth * 10, previewHeight * 10);
       this.context.strokeStyle = colorBlack;
       this.context.stroke();
     }
