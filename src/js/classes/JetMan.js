@@ -133,10 +133,6 @@ export default class JetMan {
     }
   }
 
-  drawGirl() {
-
-  }
-
   move(deltaTime, spaceDown) {
     // Move the player according to velocity
     this.y -= this.velocityY * deltaTime;
