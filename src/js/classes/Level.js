@@ -46,7 +46,7 @@ export default class Level {
   }
 
   increaseSpeed() {
-    this.speed += 1
+    this.speed += 10
   }
 
   drawBackground() {

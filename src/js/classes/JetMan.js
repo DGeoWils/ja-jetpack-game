@@ -1,12 +1,11 @@
-import {normalize} from "../helpers";
-
 import * as dudeCharacter from "../graphics/Dude";
 import * as dudetteCharacter from "../graphics/Dudette";
+
 import {flame, flameColors} from "../graphics/Flame";
 
-const acceleration = 35;
-const gravity = 25;
-const maxVelocity = 25;
+const acceleration = 30;
+const gravity = 24;
+const maxVelocity = 36;
 const radius = 25;
 const pixelDimension = 10;
 
@@ -17,7 +16,7 @@ const boundingBoxColor = 'orange';
 
 const startVertical = 90;
 const startHorizontal = 150;
-const safetyFactor = 10;
+const safetyFactor = 30;
 
 export default class JetMan {
   constructor(stageProps, context) {
@@ -27,7 +26,6 @@ export default class JetMan {
 
     this.x = startHorizontal;
     this.y = startVertical;
-    this.velocityX = 0;
     this.velocityY = 0;
 
     this.character = 1;
@@ -81,13 +79,12 @@ export default class JetMan {
     if (this.jetting) {
       pixels = dudeCharacter.jettingPixels;
       this.drawFlame();
-    }
-    else {
+    } else {
       pixels = dudeCharacter.fallingPixels;
     }
 
-    for(let x=0; x < pixelsWide; x++) {
-      for(let y=0; y < pixelsHigh; y++) {
+    for (let x = 0; x < pixelsWide; x++) {
+      for (let y = 0; y < pixelsHigh; y++) {
         this.context.beginPath();
         this.context.rect(this.x + (x * pixelDimension), this.y + (y * pixelDimension), pixelDimension, pixelDimension);
         this.context.fillStyle = pixels[x][y];
@@ -119,13 +116,10 @@ export default class JetMan {
   }
 
   drawFlame() {
-
     for(let x=0; x < 3; x++) {
       for(let y=0; y < 4; y++) {
         this.context.beginPath();
-
         this.context.rect(this.x - (x * pixelDimension), this.y + ((8 + y) * pixelDimension), pixelDimension, pixelDimension);
-
         this.context.fillStyle = flame[x][y] ? flameColors[Math.floor(Math.random() * flameColors.length)] : 'transparent';
         this.context.fill();
         this.context.closePath();
@@ -133,10 +127,9 @@ export default class JetMan {
     }
   }
 
-  move(deltaTime, spaceDown) {
+  update(deltaTime, spaceDown) {
     // Move the player according to velocity
     this.y -= this.velocityY * deltaTime;
-    this.x -= this.velocityX * deltaTime;
 
     // If player is holding space, accelerate upwards
     if (spaceDown) {
@@ -167,6 +160,6 @@ export default class JetMan {
   isCollided(wall) {
     return this.boundingBox.right > wall.left
         && this.boundingBox.left < wall.right
-        && (this.boundingBox.top < wall.normalizedRectangle1Height || this.boundingBox.bottom > wall.normalizedRectangle2StartY)
+        && (this.boundingBox.top < wall.rectangle1Height || this.boundingBox.bottom > wall.rectangle2StartY)
   }
 }

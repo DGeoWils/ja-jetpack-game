@@ -24,6 +24,7 @@ class CVS {
 
     this.lastUpdate = null;
 
+    this.update = this.update.bind(this);
     this.character = 1;
 
     this.buildWorld();
@@ -83,12 +84,18 @@ class CVS {
 
   update(timestamp) {
     // Calculate the delta time (time passed)
+    let requestId = requestAnimationFrame(this.update);
+
     const currentTime = timestamp || performance.now();
     const deltaTime = (currentTime - this.lastUpdate) / 100;
     this.lastUpdate = timestamp || currentTime;
 
+    if (this.hud.score % 500 === 0) {
+      this.level.increaseSpeed();
+    }
+
     // Calculate movement / collisions
-    this.jetman.move(deltaTime, this.input.check(this.input.SPACE));
+    this.jetman.update(deltaTime, this.input.check(this.input.SPACE));
     this.level.update(deltaTime);
 
     // Render everything
@@ -100,8 +107,6 @@ class CVS {
 
     this.hud.incrementScore();
     this.hud.draw();
-
-    let requestId = requestAnimationFrame((frameTime) => this.update(frameTime));
 
     if (this.jetman.isCollided(this.level.walls[this.level.closerWall])) {
       this.stop(requestId);

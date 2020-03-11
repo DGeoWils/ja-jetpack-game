@@ -35,7 +35,7 @@ export default class TitleScreen {
 
     // screen instructions
     this.context.font = '20px Courier';
-    this.context.fillText('Use \u{1f844} and \u{1f846} to Select a Character', this.midX, this.midY - 30);
+    this.context.fillText('Use \u2190 and \u2192 to Select a Character', this.midX, this.midY - 30);
     this.context.fillText('Press Space to Start', this.midX, this.midY + 10);
 
     this.context.closePath();
@@ -80,6 +80,6 @@ export default class TitleScreen {
       this.context.stroke();
       this.context.closePath();
     }
-    
+
   }
 }
