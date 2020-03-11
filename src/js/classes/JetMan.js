@@ -1,6 +1,7 @@
 import {normalize} from "../helpers";
 
-import {jettingPixels, fallingPixels} from "../graphics/Dude";
+import * as dudeCharacter from "../graphics/Dude";
+import * as dudetteCharacter from "../graphics/Dudette";
 import {flame, flameColors} from "../graphics/Flame";
 
 const acceleration = 35;
@@ -10,7 +11,7 @@ const radius = 25;
 const pixelDimension = 10;
 
 const pixelsWide = 7;
-const pixelsHigh = 12;
+const pixelsHigh = 13;
 
 const boundingBoxColor = 'orange';
 
@@ -29,6 +30,8 @@ export default class JetMan {
     this.velocityX = 0;
     this.velocityY = 0;
 
+    this.character = 1;
+
     this.width = pixelsWide * pixelDimension;
     this.height = pixelsHigh * pixelDimension;
 
@@ -42,15 +45,19 @@ export default class JetMan {
     };
   }
 
-  draw() {
+  draw(currentCharacter) {
     // this.context.beginPath();
     // this.context.rect(this.x, this.y, this.width, this.height);
     // this.context.fillStyle = 'green';
     // this.context.fill();
     // this.context.closePath();
 
+    if (currentCharacter == 1) {
+      this.drawDude();
+    } else if (currentCharacter == 2) {
+      this.drawDudette();
+    }
 
-    this.drawDude();
     this.drawBoundingBox();
   }
 
@@ -72,11 +79,11 @@ export default class JetMan {
   drawDude() {
     let pixels;
     if (this.jetting) {
-      pixels = jettingPixels;
+      pixels = dudeCharacter.jettingPixels;
       this.drawFlame();
     }
     else {
-      pixels = fallingPixels;
+      pixels = dudeCharacter.fallingPixels;
     }
 
     for(let x=0; x < pixelsWide; x++) {
@@ -88,8 +95,27 @@ export default class JetMan {
         this.context.closePath();
       }
     }
+  }
 
-    pixels = null;
+  drawDudette() {
+    let pixels;
+    if (this.jetting) {
+      pixels = dudetteCharacter.jettingPixels;
+      this.drawFlame();
+    }
+    else {
+      pixels = dudetteCharacter.fallingPixels;
+    }
+
+    for (let x = 0; x < pixelsWide; x++) {
+      for (let y = 0; y < pixelsHigh; y++) {
+        this.context.beginPath();
+        this.context.rect(this.x + (x * pixelDimension), this.y + (y * pixelDimension), pixelDimension, pixelDimension);
+        this.context.fillStyle = pixels[x][y];
+        this.context.fill();
+        this.context.closePath();
+      }
+    }
   }
 
   drawFlame() {
@@ -105,10 +131,6 @@ export default class JetMan {
         this.context.closePath();
       }
     }
-  }
-
-  drawGirl() {
-
   }
 
   move(deltaTime, spaceDown) {

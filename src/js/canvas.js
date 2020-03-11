@@ -3,6 +3,7 @@ import JetMan from "./classes/JetMan";
 import Level from "./classes/Level";
 import Input from "./classes/Input";
 import Hud from "./classes/Hud";
+import TitleScreen from './classes/TitleScreen';
 
 class CVS {
   constructor() {
@@ -23,9 +24,11 @@ class CVS {
 
     this.lastUpdate = null;
 
+    this.character = 1;
+
     this.buildWorld();
 
-    let x = this.input.addListener(this.input.SPACE, (e) => {
+    this.input.addListener(this.input.SPACE, (e) => {
       // Start the game if it hasn't been started yet
       if (!this.started && !this.ended) {
         this.started = true;
@@ -41,17 +44,32 @@ class CVS {
         this.started = false;
       }
     });
+
+    this.input.addListener(this.input.RT_ARROW, (e) => {
+      if (!this.started && !this.ended) {
+        this.character = 2;
+        this.titleScreen.draw(this.character);
+      }
+    });
+
+    this.input.addListener(this.input.LT_ARROW, (e) => {
+      if (!this.started && !this.ended) {
+        this.character = 1;
+        this.titleScreen.draw(this.character);
+      }
+    });
   }
 
   buildWorld() {
     this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
 
-
     this.jetman = new JetMan(this.stageProps, this.ctx);
     this.level = new Level(this.stageProps, this.ctx);
     this.hud = new Hud(this.stageProps, this.ctx);
+    this.titleScreen = new TitleScreen(this.stageProps, this.ctx);
 
     this.level.drawBackground();
+    this.titleScreen.draw(this.character);
   }
 
   stop(requestId) {
@@ -65,7 +83,6 @@ class CVS {
 
   update(timestamp) {
     // Calculate the delta time (time passed)
-
     const currentTime = timestamp || performance.now();
     const deltaTime = (currentTime - this.lastUpdate) / 100;
     this.lastUpdate = timestamp || currentTime;
@@ -78,7 +95,7 @@ class CVS {
     this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
 
     this.level.drawBackground();
-    this.jetman.draw();
+    this.jetman.draw(this.character);
     this.level.draw();
 
     this.hud.incrementScore();

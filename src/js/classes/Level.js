@@ -3,7 +3,6 @@ import Background from "../graphics/Background";
 
 const newWallAt = 15;
 
-
 export default class Level {
   constructor(stageProps, context) {
     this.context = context;
