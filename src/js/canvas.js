@@ -7,16 +7,16 @@ import TitleScreen from './classes/TitleScreen';
 
 class CVS {
   constructor() {
-    this.canvas = document.querySelector("canvas");
-    this.ctx = this.canvas.getContext('2d');
+    let canvas = document.querySelector("canvas");
+    this.ctx = canvas.getContext('2d');
 
     this.stageProps = {
       width: 860,
       height: 640
     };
 
-    this.canvas.width = this.stageProps.width;
-    this.canvas.height = this.stageProps.height;
+    canvas.width = this.stageProps.width;
+    canvas.height = this.stageProps.height;
 
     this.input = new Input(document.body);
     this.started = false;
@@ -102,6 +102,8 @@ class CVS {
     this.ctx.clearRect(0, 0, this.stageProps.width, this.stageProps.height);
 
     this.level.drawBackground();
+    this.level.drawClouds();
+
     this.jetman.draw(this.character);
     this.level.draw();
 

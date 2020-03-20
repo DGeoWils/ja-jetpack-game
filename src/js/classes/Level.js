@@ -1,5 +1,6 @@
 import Walls from "./Walls";
 import Background from "../graphics/Background";
+import Cloud from "./Cloud";
 
 const newWallAt = 15;
 
@@ -11,6 +12,8 @@ export default class Level {
     this.speed = 40;
 
     this.stageProps = stageProps;
+    this.clouds = new Cloud(this.stageProps, context);
+
     this.walls.push(new Walls(this.stageProps, context));
     this.walls.push(new Walls(this.stageProps, context));
 
@@ -37,12 +40,19 @@ export default class Level {
       this.walls[1].moving = true;
       this.closerWall = 1;
     }
+
+
+    this.clouds.move(deltaTime, this.speed);
   }
 
   draw() {
     for (let i = 0; i < this.walls.length; i++) {
       this.walls[i].draw();
     }
+  }
+
+  drawClouds() {
+    this.clouds.draw();
   }
 
   increaseSpeed() {

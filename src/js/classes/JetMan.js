@@ -50,13 +50,13 @@ export default class JetMan {
     // this.context.fill();
     // this.context.closePath();
 
-    if (currentCharacter == 1) {
+    if (currentCharacter === 1) {
       this.drawDude();
-    } else if (currentCharacter == 2) {
+    } else if (currentCharacter === 2) {
       this.drawDudette();
     }
 
-    this.drawBoundingBox();
+    // this.drawBoundingBox();
   }
 
   updateBoundingBox() {
